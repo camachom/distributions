@@ -1,0 +1,26 @@
+{
+	"name": "distributions",
+	"version": "1.0.0",
+	"description": "",
+	"main": "classType.js",
+	"bin": {
+		"distributions": "/bin/index.js"
+	},
+	"files": [
+		"bin",
+		"src"
+	],
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/camachom/distributions.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/camachom/distributions/issues"
+	},
+	"homepage": "https://github.com/camachom/distributions#readme"
+}
