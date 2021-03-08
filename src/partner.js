@@ -1,7 +1,7 @@
 "use strict";
 
 class Partner {
-	constructor(name = "member", membership, amount = 0) {
+	constructor(name = "Member", membership, amount = 0) {
 		if (!membership) {
 			throw new Error("Partners must belong to a class");
 		}

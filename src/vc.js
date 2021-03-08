@@ -6,6 +6,7 @@ class VC {
 	constructor() {
 		this.classes = new Set();
 		this.distributionOrder = [];
+		this.distributionAmount = 0;
 	}
 
 	addClass(type) {
@@ -15,11 +16,7 @@ class VC {
 		return newClass;
 	}
 
-	setDistributionOrder(order) {
-		this.distributionOrder = order;
-	}
-
-	payOutByCategory({ classes }, categoryAmount) {
+	payOutByCategory({ classes }, categoryCap) {
 		let totalCategoryUnits = classes.reduce((total, classType) => {
 			return total + classType.totalUnits;
 		}, 0);
@@ -29,12 +26,18 @@ class VC {
 
 			for (const holder of holders) {
 				const categoryUnits = holder.unitsByType(classType.type);
+				const payout = categoryCap * (categoryUnits / totalCategoryUnits);
+				/* 
+				Here's a sample payout:
+					categoryCap = 500
+					totalCategoryUnits = 20
+					Holder (Becky) has 10 categoryUnits
 
-				const payout = categoryAmount * (categoryUnits / totalCategoryUnits);
-				const roundedPayout = Math.floor(payout * 100) / 100;
+					Becky's payout is 500*(10/20) = 250;
+				*/
 
-				holder.payout += roundedPayout;
-				classType.payout += roundedPayout;
+				holder.payout += payout;
+				classType.payout += payout;
 			}
 		}
 	}
@@ -44,18 +47,64 @@ class VC {
 			throw new Error("No distribution rules implemented.");
 		}
 
+		this.distributionAmount = amount;
 		let currentAmount = amount;
 		for (const category of this.distributionOrder) {
+			/* 
+				Here is a sample distribution order:
+				[
+					{
+						classes: [classB],
+						cap: 500,
+					},
+					{
+						classes: [classA, classB, classC],
+						cap: Infinity,
+					},
+				];
+			*/
+
 			if (currentAmount <= 0) {
 				break;
 			}
 
 			const { cap } = category;
-			const categoryAmount = cap <= currentAmount ? cap : currentAmount;
-			currentAmount -= categoryAmount;
+			const categoryCap = cap <= currentAmount ? cap : currentAmount;
+			currentAmount -= categoryCap;
 
-			this.payOutByCategory(category, categoryAmount);
+			this.payOutByCategory(category, categoryCap);
 		}
+	}
+
+	roundDown(num) {
+		return Math.floor(num * 100) / 100;
+	}
+
+	printPayout() {
+		const classOutput = {};
+		this.classes.forEach((classType) => {
+			classOutput[classType.type] = this.roundDown(classType.payout);
+		});
+
+		const partnerOutput = {};
+		this.classes.forEach((classType) => {
+			classType.holders.forEach((holder) => {
+				if (!partnerOutput[holder.name]) {
+					partnerOutput[holder.name] = this.roundDown(holder.payout);
+				}
+			});
+		});
+
+		console.log(
+			JSON.stringify({
+				distributionPerClass: {
+					...classOutput,
+				},
+				distributionPerPartner: {
+					...partnerOutput,
+				},
+			})
+		);
 	}
 }
 

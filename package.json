@@ -1,10 +1,10 @@
 {
-	"name": "distributions",
+	"name": "@camachom/distributions",
 	"version": "1.0.0",
 	"description": "",
 	"main": "classType.js",
 	"bin": {
-		"distributions": "/bin/index.js"
+		"distribution": "/bin/index.js"
 	},
 	"files": [
 		"bin",
@@ -22,5 +22,6 @@
 	"bugs": {
 		"url": "https://github.com/camachom/distributions/issues"
 	},
-	"homepage": "https://github.com/camachom/distributions#readme"
+	"homepage": "https://github.com/camachom/distributions#readme",
+	"dependencies": {}
 }
